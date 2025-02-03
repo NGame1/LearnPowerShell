@@ -78,9 +78,8 @@ $students | Export-StudentsToJson -FilePath "00_students.json"
 # 2. Import students from JSON
 $loadedStudents = Import-StudentsFromJson -FilePath "00_students.json"
 
-# 3. Working with JSON data
-# $studentJson = $john.ToJsonObject() | ConvertTo-Json
-Write-Host "`nSingle student as JSON:"
-Write-Host $studentJson
+foreach($student in $students){
+    Write-Host $student.FirstName
+}
 
 Pause
