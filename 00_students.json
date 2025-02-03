@@ -1,0 +1,20 @@
+[
+    {
+        "FullName":  "Ali Noshahi",
+        "Name":  "Ali",
+        "Age":  20,
+        "LastName":  "Noshahi"
+    },
+    {
+        "FullName":  "Amin Jeff",
+        "Name":  "Amin",
+        "Age":  19,
+        "LastName":  "Jeff"
+    },
+    {
+        "FullName":  "Saeed Sheikhi",
+        "Name":  "Saeed",
+        "Age":  18,
+        "LastName":  "Sheikhi"
+    }
+]
