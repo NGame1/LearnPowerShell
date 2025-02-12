@@ -40,7 +40,7 @@ jobs:
           since_last_remote_commit: true
           
       - name: Setup PowerShell Core
-        uses: powershell/PowerShell@latest
+        uses: powershell/PowerShell@v7.5.0
         with:
           version: '7.3'
           
@@ -84,7 +84,7 @@ jobs:
 
       - name: Upload Script Results
         if: always()  # Run even if previous step fails
-        uses: actions/upload-artifact@latest
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: script-results
           path: script-results/
