@@ -24,4 +24,4 @@ function ReadWriteHost(){
 }
 
 ReadWriteHost
-pause
+Pause
