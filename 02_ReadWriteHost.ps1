@@ -20,7 +20,7 @@ function ReadWriteHost(){
             }
         }
         elseif($input -eq "bye"){
-            break
+            return
         }
         $count++
     }
