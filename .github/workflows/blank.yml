@@ -76,29 +76,3 @@ jobs:
               }
             }
           }
-
-      - name: Upload Script Results
-        if: always()  # Run even if previous step fails
-        uses: actions/upload-artifact@v4.6.0
-        with:
-          name: script-results
-          path: script-results/
-          retention-days: 7
-
-      - name: Parse Results and Create Summary
-        if: always()
-        shell: pwsh
-        run: |
-          $results = Get-ChildItem -Path "script-results" -Filter "*.log"
-          
-          "## PowerShell Script Execution Results" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY
-          "" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-          
-          foreach ($result in $results) {
-            "### $($result.BaseName)" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-            "```" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-            Get-Content $result.FullName | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-            "```" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-            "" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-          }
-
