@@ -1,0 +1,109 @@
+# This is a basic workflow to help you get started with Actions
+
+name: PowerShell Script Runner
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+    paths: [ "**.ps1" ]
+    
+  pull_request:
+    branches: [ "main" ]
+    paths: [ "**.ps1" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  run-PowerShell:
+    # The type of runner that the job will run on
+    name: Execute Changed PowerShell Scripts
+    runs-on: windows-latest  # Using Windows runner for PowerShell
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # Fetch last 2 commits to detect changes
+
+      - name: Get Changed Files
+        id: changed-files
+        uses: tj-actions/changed-files@v41
+        with:
+          files: |
+            **.ps1
+          since_last_remote_commit: true
+          
+      - name: Setup PowerShell Core
+        uses: powershell/PowerShell@v1
+        with:
+          version: '7.3'
+          
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      - name: Execute Changed PowerShell Scripts
+        shell: pwsh
+        run: |
+          # Create a results directory
+          New-Item -ItemType Directory -Force -Path "script-results"
+          
+          # Get the list of changed files
+          $changedFiles = "${{ steps.changed-files.outputs.all_changed_files }}".Split(" ")
+          
+          foreach ($file in $changedFiles) {
+            if ($file -match "\.ps1$") {
+              Write-Host "Processing script: $file"
+              try {
+                # Create a timestamp for the log file
+                $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+                $logFile = "script-results/$($file.Replace('/', '_'))_$timestamp.log"
+                
+                # Execute the script and capture output
+                $output = & {
+                  Write-Host "=== Script Execution Start: $file ==="
+                  $result = & $file 2>&1
+                  Write-Host "=== Script Execution End ==="
+                  return $result
+                } | Tee-Object -FilePath $logFile
+                
+                Write-Host "Script execution completed. Results saved to: $logFile"
+              }
+              catch {
+                Write-Error "Error executing script $file : $_"
+                throw $_
+              }
+            }
+          }
+
+      - name: Upload Script Results
+        if: always()  # Run even if previous step fails
+        uses: actions/upload-artifact@v3
+        with:
+          name: script-results
+          path: script-results/
+          retention-days: 7
+
+      - name: Parse Results and Create Summary
+        if: always()
+        shell: pwsh
+        run: |
+          $results = Get-ChildItem -Path "script-results" -Filter "*.log"
+          
+          "## PowerShell Script Execution Results" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY
+          "" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          
+          foreach ($result in $results) {
+            "### $($result.BaseName)" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+            "```" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+            Get-Content $result.FullName | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+            "```" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+            "" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          }
+
