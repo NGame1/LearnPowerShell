@@ -2,8 +2,10 @@ function ReadWriteHost(){
     $name = Read-Host "Hello, what's your name?"
     Write-Host "Hello, $name"
     # "Hello, $name" | Out-Host
+    
+    $count = 0
 
-    while($true){
+    while($count -lt 20){
         $input = Read-Host ""$name, Enter your age.$([environment]::NewLine)Or enter bye to exit.""
         
         $age = 0
@@ -24,4 +26,4 @@ function ReadWriteHost(){
 }
 
 ReadWriteHost
-Pause
+pause
