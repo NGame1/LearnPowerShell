@@ -63,7 +63,7 @@ jobs:
                 # Execute the script and capture output
                 $output = & {
                   Write-Host "=== Script Execution Start: $file ==="
-                  $result = & $file 2>&1
+                  $result = & ".\$file" 2>&1
                   Write-Host "=== Script Execution End ==="
                   return $result
                 } | Tee-Object -FilePath $logFile
