@@ -22,6 +22,7 @@ function ReadWriteHost(){
         elseif($input -eq "bye"){
             break
         }
+        $count++
     }
 }
 
