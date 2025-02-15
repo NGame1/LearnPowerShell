@@ -1,4 +1,5 @@
 # -eq : equals
+# -ceq: case sensitive equals
 # -gt : greater than
 # -lt : less than
 # -ge : greater than or equal
@@ -7,7 +8,7 @@
 
 while($true){
     $input = Read-Host "Enter everything to loop or say bye to quit."
-    if($input -eq "bye"){
+    if($input -eq "bye" -or $input -eq ""){
         break
     }
 }
@@ -19,3 +20,4 @@ for($i = 1; $i -le 100; $i++){
         Write-Host "$i is Even"
     }
 }
+Pause
