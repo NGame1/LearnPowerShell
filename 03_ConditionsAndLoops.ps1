@@ -8,7 +8,7 @@
 
 while($true){
     $input = Read-Host "Enter everything to loop or say bye to quit."
-    if($input -eq "bye" -or $input -eq ""){
+    if($input -eq "bye" -or ([string]::IsNullOrWhiteSpace($input))){
         break
     }
 }
